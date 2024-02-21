@@ -1,14 +1,14 @@
 import React from "react";
 
-const Movie = ({ movie }) => {
+const Movie = ({ imdbID, Poster, Title, Year, selectedMovie }) => {
   return (
-    <li>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
+    <li onClick={() => selectedMovie(imdbID)}>
+      <img src={Poster} alt={`${Title} poster`} />
+      <h3>{Title}</h3>
       <div>
         <p>
           <span>🗓</span>
-          <span>{movie.Year}</span>
+          <span>{Year}</span>
         </p>
       </div>
     </li>
