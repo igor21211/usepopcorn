@@ -3,9 +3,11 @@ import { API_KEY } from "../helper/credentional";
 import StartRating from "../StarRating/StartRating";
 import Loader from "../Loader/Loader";
 
-const SelectedMovie = ({ selectedId, closeMovie }) => {
+const SelectedMovie = ({ selectedId, closeMovie, onAddWatch, watched }) => {
   const [movie, setMovie] = useState({});
   const [isLoading, setLoading] = useState(false);
+  const [userRating, setUserRating] = useState("");
+  const exist = watched.map((movie) => movie.imdbID).includes(selectedId);
   const {
     Title: title,
     Year: year,
@@ -18,6 +20,19 @@ const SelectedMovie = ({ selectedId, closeMovie }) => {
     Director: director,
     Genre: genre,
   } = movie;
+  const handleAdd = () => {
+    const newMovie = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: runtime.split(" ").at(0),
+      userRating,
+    };
+    onAddWatch(newMovie);
+    closeMovie();
+  };
   useEffect(() => {
     async function getMovieDetails() {
       try {
@@ -35,6 +50,13 @@ const SelectedMovie = ({ selectedId, closeMovie }) => {
     }
     getMovieDetails();
   }, [selectedId]);
+
+  useEffect(() => {
+    document.title = `Movie | ${title}`;
+    return function () {
+      document.title = "Popcorn";
+    };
+  }, [title]);
   return (
     <div className="details">
       {isLoading ? (
@@ -60,7 +82,22 @@ const SelectedMovie = ({ selectedId, closeMovie }) => {
           </header>
           <section>
             <div className="rating">
-              <StartRating maxRating={10} size={24} />
+              {exist ? (
+                "You add movie to list"
+              ) : (
+                <>
+                  <StartRating
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
+                  {userRating > 0 && (
+                    <button className="btn-add" onClick={handleAdd}>
+                      Add to list
+                    </button>
+                  )}
+                </>
+              )}
             </div>
             <p>
               <em>{plot}</em>

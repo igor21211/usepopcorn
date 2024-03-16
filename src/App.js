@@ -28,6 +28,13 @@ export default function App() {
   const hadnleCloseMovie = () => {
     setSelectedId(null);
   };
+  const handleDeleteWAtched = (id) => {
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+  };
+
+  const handleAddWatched = (movie) => {
+    setWatched((watched) => [...watched, movie]);
+  };
 
   useEffect(() => {
     async function fetchMovies() {
@@ -83,11 +90,16 @@ export default function App() {
             <SelectedMovie
               selectedId={selectId}
               closeMovie={hadnleCloseMovie}
+              onAddWatch={handleAddWatched}
+              watched={watched}
             />
           ) : (
             <>
               <WathedSummery watched={watched} />
-              <WatchedMovieList watched={watched} />
+              <WatchedMovieList
+                watched={watched}
+                onDeleteWathed={handleDeleteWAtched}
+              />
             </>
           )}
         </Box>
