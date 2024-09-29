@@ -1,6 +1,10 @@
 import React from "react";
 
-const Errors = ({ message }) => {
+interface ErrorProps {
+  message: string;
+}
+
+const Errors = ({ message }: ErrorProps) => {
   return (
     <p className="error">
       <span>❌</span> {message}

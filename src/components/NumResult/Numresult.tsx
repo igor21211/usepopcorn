@@ -1,6 +1,10 @@
 import React from "react";
 
-const Numresult = ({ total }) => {
+interface NumResultProps {
+  total: string;
+}
+
+const Numresult = ({ total }: NumResultProps) => {
   return (
     <p className="num-results">
       Found <strong>{total}</strong> results

@@ -1,11 +1,17 @@
 import React from "react";
-const average = (arr) =>
+import { WatchedMovie as WatchedMovieType } from "../../types";
+
+interface WathedSummeryProps {
+  watched: WatchedMovieType[];
+}
+
+const average = (arr: number[]) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const WathedSummery = ({ watched }) => {
+const WathedSummery = ({ watched }: WathedSummeryProps) => {
   const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
   const avgUserRating = average(watched.map((movie) => movie.userRating));
-  const avgRuntime = average(watched.map((movie) => movie.runtime));
+  const avgRuntime = average(watched.map((movie) => Number(movie.runtime)));
   return (
     <div className="summary">
       <h2>Movies you watched</h2>

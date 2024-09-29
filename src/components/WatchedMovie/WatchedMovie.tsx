@@ -1,6 +1,12 @@
 import React from "react";
+import { WatchedMovie as WatchedMovieType } from "../../types";
 
-const WatchedMovie = ({ movie, onDeleteWathed }) => {
+interface WatchedMovieProps {
+  movie: WatchedMovieType;
+  onDeleteWathed: (imdbID: string) => void;
+}
+
+const WatchedMovie = ({ movie, onDeleteWathed }: WatchedMovieProps) => {
   return (
     <li>
       <img src={movie.poster} alt={`${movie.title} poster`} />
@@ -20,7 +26,7 @@ const WatchedMovie = ({ movie, onDeleteWathed }) => {
         </p>
         <button
           className="btn-delete"
-          onClick={() => onDeleteWathed(movie.imdbID)}
+          onClick={(): void => onDeleteWathed(movie.imdbID)}
         >
           X
         </button>

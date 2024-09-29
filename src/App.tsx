@@ -11,59 +11,34 @@ import Box from "./components/ListBox/ListBox";
 import Loader from "./components/Loader/Loader";
 import Errors from "./components/Error/Error";
 import SelectedMovie from "./components/SelectedMovie/SelectedMovie";
-import { API_KEY } from "./components/helper/credentional";
-
+import { WatchedMovie } from "./types";
+import { useLocalStorage, useMovies } from "./hooks";
+import { useKey } from "./hooks/useKey";
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
-  const [query, setQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [selectId, setSelectedId] = useState(null);
+  const [query, setQuery] = useState<string>("");
+  const [selectId, setSelectedId] = useState<string | null>(null);
+  const { movies, isLoading, error } = useMovies(query, () => {
+    setSelectedId(null);
+  });
+  const [watched, setWatched] = useLocalStorage<WatchedMovie[]>("watched", []);
 
-  const handlesetSelectedID = (id) => {
+  useKey("Escape", hadnleCloseMovie);
+  const handlesetSelectedID = (id: string) => {
     setSelectedId((selectId) => (id === selectId ? null : id));
   };
 
-  const hadnleCloseMovie = () => {
+  function hadnleCloseMovie() {
     setSelectedId(null);
-  };
-  const handleDeleteWAtched = (id) => {
-    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
-  };
-
-  const handleAddWatched = (movie) => {
-    setWatched((watched) => [...watched, movie]);
+  }
+  const handleDeleteWAtched = (id: string) => {
+    setWatched((watched: WatchedMovie[]) =>
+      watched.filter((movie) => movie.imdbID !== id)
+    );
   };
 
-  useEffect(() => {
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        setError("");
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`,
-        );
-        if (!res.ok) throw new Error("Something went wrong");
-        const data = await res.json();
-        if (data.Response === "False") throw new Error("Movie Not Found");
-        setMovies(data);
-        setError("");
-      } catch (err) {
-        setMovies([]);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    if (query.length < 3) {
-      setMovies([]);
-      setError("");
-      return;
-    }
-    fetchMovies();
-  }, [query]);
+  const handleAddWatched = (movie: WatchedMovie) => {
+    setWatched((watched: WatchedMovie[]) => [...watched, movie]);
+  };
 
   return (
     <>

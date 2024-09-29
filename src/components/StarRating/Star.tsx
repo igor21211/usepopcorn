@@ -1,7 +1,23 @@
 import { logDOM } from "@testing-library/react";
 import React from "react";
 
-const Start = ({ onClick, full, onHoverIn, onHoverOut, color, size }) => {
+interface StarProps {
+  onClick: () => void;
+  full: boolean;
+  onHoverIn: () => void;
+  onHoverOut: () => void;
+  color: string;
+  size: number;
+}
+
+const Start = ({
+  onClick,
+  full,
+  onHoverIn,
+  onHoverOut,
+  color,
+  size,
+}: StarProps) => {
   const startStyle = {
     width: `${size}px`,
     height: `${size}px`,

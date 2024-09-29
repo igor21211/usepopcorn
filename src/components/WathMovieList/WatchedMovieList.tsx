@@ -1,7 +1,16 @@
 import React from "react";
 import WatchedMovie from "../WatchedMovie/WatchedMovie";
+import { WatchedMovie as WatchedMovieType } from "../../types";
 
-const WatchedMovieList = ({ watched, onDeleteWathed }) => {
+interface WatchedMovieListProps {
+  watched: WatchedMovieType[];
+  onDeleteWathed: (imdbID: string) => void;
+}
+
+const WatchedMovieList = ({
+  watched,
+  onDeleteWathed,
+}: WatchedMovieListProps) => {
   return (
     <ul className="list">
       {watched.map((movie) => (

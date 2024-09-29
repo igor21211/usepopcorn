@@ -10,6 +10,15 @@ const startContainerStyle = {
   display: "flex",
 };
 
+interface StartRatingProps {
+  maxRating?: number;
+  color?: string;
+  size?: number;
+  defaultRating?: number;
+  messages?: string[];
+  onSetRating: (rating: number) => void;
+}
+
 const StartRating = ({
   maxRating = 5,
   color = "#fcc419",
@@ -17,11 +26,11 @@ const StartRating = ({
   defaultRating = 0,
   messages = [],
   onSetRating,
-}) => {
+}: StartRatingProps) => {
   const [rating, setRating] = useState(defaultRating);
   const [tempRating, settempRating] = useState(0);
 
-  const handlerRating = (num) => {
+  const handlerRating = (num: number) => {
     setRating(num);
     onSetRating(num);
   };
@@ -44,7 +53,6 @@ const StartRating = ({
             onHoverOut={() => settempRating(0)}
             color={color}
             size={size}
-            defaultRating={defaultRating}
           />
         ))}
       </div>

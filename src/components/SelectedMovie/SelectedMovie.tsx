@@ -1,13 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { API_KEY } from "../helper/credentional";
 import StartRating from "../StarRating/StartRating";
 import Loader from "../Loader/Loader";
+import { MovieDetails, WatchedMovie } from "../../types";
 
-const SelectedMovie = ({ selectedId, closeMovie, onAddWatch, watched }) => {
-  const [movie, setMovie] = useState({});
-  const [isLoading, setLoading] = useState(false);
-  const [userRating, setUserRating] = useState("");
-  const exist = watched.map((movie) => movie.imdbID).includes(selectedId);
+interface SelectedMovieProps {
+  selectedId: string;
+  closeMovie: () => void;
+  onAddWatch: (movie: WatchedMovie) => void;
+  watched: WatchedMovie[];
+}
+
+const SelectedMovie = ({
+  selectedId,
+  closeMovie,
+  onAddWatch,
+  watched,
+}: SelectedMovieProps) => {
+  const [movie, setMovie] = useState<MovieDetails>({
+    Title: "",
+    Year: "",
+    Poster: "",
+    Runtime: "",
+    imdbRating: "",
+    Plot: "",
+    Released: "",
+    Actors: "",
+    Director: "",
+    Genre: "",
+  });
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [userRating, setUserRating] = useState<number>(0);
+  const countRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (userRating) countRef.current = countRef.current + 1;
+  }, [userRating]);
+
+  const exist = watched
+    .map((movie: WatchedMovie) => movie.imdbID)
+    .includes(selectedId);
   const {
     Title: title,
     Year: year,
@@ -19,9 +51,9 @@ const SelectedMovie = ({ selectedId, closeMovie, onAddWatch, watched }) => {
     Actors: actors,
     Director: director,
     Genre: genre,
-  } = movie;
+  } = movie as MovieDetails;
   const handleAdd = () => {
-    const newMovie = {
+    const newMovie: WatchedMovie = {
       imdbID: selectedId,
       title,
       year,
@@ -29,6 +61,7 @@ const SelectedMovie = ({ selectedId, closeMovie, onAddWatch, watched }) => {
       imdbRating: Number(imdbRating),
       runtime: runtime.split(" ").at(0),
       userRating,
+      countRatingDecisions: countRef.current,
     };
     onAddWatch(newMovie);
     closeMovie();
@@ -38,9 +71,10 @@ const SelectedMovie = ({ selectedId, closeMovie, onAddWatch, watched }) => {
       try {
         setLoading(true);
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${API_KEY}&i=${selectedId}`,
+          `http://www.omdbapi.com/?apikey=${API_KEY}&i=${selectedId}`
         );
-        const data = await res.json();
+        const data = (await res.json()) as MovieDetails;
+        console.log(data);
         setMovie(data);
       } catch (err) {
         console.log(err);

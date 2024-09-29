@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-const Main = ({ children }) => {
+interface MainProps {
+  children: React.ReactNode;
+}
+
+const Main = ({ children }: MainProps) => {
   return <main className="main">{children}</main>;
 };
 
